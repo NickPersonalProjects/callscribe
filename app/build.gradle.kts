@@ -129,7 +129,8 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.kitsumed.shizucallrecorder"
+        // CallScribe: Section 7 requires forks to use a distinct package ID.
+        applicationId = "com.nicholaston.callscribe"
         minSdk = 30
         targetSdk = 36
         // Keep theses two values hard-coded here and update them per version. (To keep F-Droid compatibility since their parser is very basic)
@@ -152,6 +153,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

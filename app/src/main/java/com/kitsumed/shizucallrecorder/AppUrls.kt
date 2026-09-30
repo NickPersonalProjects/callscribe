@@ -13,16 +13,16 @@ package com.kitsumed.shizucallrecorder
  */
 object AppUrls {
     /** The main GitHub repository for the project. */
-    const val GITHUB_REPOSITORY = "https://github.com/kitsumed/ShizuCallRecorder"
+    const val GITHUB_REPOSITORY = "https://github.com/Nichkt/callscribe"
 
     /** The GitHub Sponsors page for the project, where users can financially support. */
     const val GITHUB_SPONSOR = "https://github.com/sponsors/kitsumed#:~:text=Select a tier"
 
     /** The GitHub Wiki page containing documentation and guides. */
-    const val GITHUB_WIKI = "https://github.com/kitsumed/ShizuCallRecorder/blob/main/docs/SUPPORT.md"
+    const val GITHUB_WIKI = "https://github.com/Nichkt/callscribe/blob/main/docs/SUPPORT.md"
 
     /** The URL to open when the user wants to report a bug or create a new issue. */
-    const val GITHUB_NEW_ISSUE = "https://github.com/kitsumed/ShizuCallRecorder/issues/new/choose"
+    const val GITHUB_NEW_ISSUE = "https://github.com/Nichkt/callscribe/issues/new/choose"
 
     /** The Shizuku project website/repository. */
     const val SHIZUKU_WEBSITE = "https://github.com/thedjchi/Shizuku"
