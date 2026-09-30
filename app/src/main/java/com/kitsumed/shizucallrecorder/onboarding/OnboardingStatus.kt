@@ -14,7 +14,6 @@ import com.kitsumed.shizucallrecorder.integrations.shizuku.ShizukuConnectionMana
 import com.kitsumed.shizucallrecorder.services.callDetection.CallDetectionMode
 import com.kitsumed.shizucallrecorder.system.permissions.AppPermission
 import com.kitsumed.shizucallrecorder.system.permissions.PermissionChecks
-import com.kitsumed.shizucallrecorder.system.storage.SafHelper
 import com.kitsumed.shizucallrecorder.ui.viewmodels.AppNavigationViewModel
 
 /**
@@ -72,7 +71,6 @@ object OnboardingStatus {
      * @return A fully populated [Status] reflecting the current device state.
      */
     fun getStatus(context: Context, preferences: AppPreferences): Status {
-        val storageUri = preferences.getRecordingFolderUri()
         val currentCallDetectionMode = preferences.getCallDetectionMode()
 
         // Make a list of all permissions required by the current call detection mode that have been granted.
@@ -85,7 +83,9 @@ object OnboardingStatus {
             notificationsGranted     = PermissionChecks.hasNotificationPermission(context),
             contactsGranted          = PermissionChecks.hasContactsPermission(context),
             batteryExempted          = PermissionChecks.hasBatteryExemption(context),
-            storageSelected          = SafHelper.isFolderValid(context, storageUri),
+            // CallScribe records to app-private storage by default. SAF is optional and is
+            // validated by the recording engine only when the user explicitly selects it.
+            storageSelected          = true,
             // Special check here, if the auto-manage option was enabled, users already passed this check, and we can assume app will be able to start/stop Shizuku as needed.
             shizukuRunning           = ShizukuConnectionManager.isAvailable() || preferences.isShizukuAutoManageEnabled(),
             // We provide the context to use the Android Permission system as a fallback. Since if isShizukuAutoManageEnabled is enabled, we can assume the

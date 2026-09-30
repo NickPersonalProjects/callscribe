@@ -9,7 +9,6 @@
 package com.kitsumed.shizucallrecorder.ui.screens
 
 import android.Manifest
-import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,9 +28,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -53,7 +54,6 @@ import com.kitsumed.shizucallrecorder.data.AppPreferences
 import com.kitsumed.shizucallrecorder.integrations.shizuku.ShizukuConnectionManager
 import com.kitsumed.shizucallrecorder.onboarding.OnboardingStatus
 import com.kitsumed.shizucallrecorder.services.callDetection.CallDetectionMode
-import com.kitsumed.shizucallrecorder.system.openAppSettings
 import com.kitsumed.shizucallrecorder.system.openGithubReportIssue
 import com.kitsumed.shizucallrecorder.ui.common.M3DropdownField
 import com.kitsumed.shizucallrecorder.ui.common.OptionItem
@@ -82,6 +82,8 @@ import kotlin.system.exitProcess
 fun PermissionsScreen(
     status: OnboardingStatus.Status,
     onPermissionGranted: () -> Unit,
+    onEnableEverythingStarted: () -> Unit,
+    startImmediately: Boolean,
     modifier: Modifier = Modifier,
     viewModel: PermissionsViewModel = viewModel()
 ) {
@@ -89,7 +91,8 @@ fun PermissionsScreen(
     val activityContext = LocalContext.current
 
     // Quick debug dialog for when issues arise on the permission setup.
-    var showDebugDialog by remember() { mutableStateOf(false) }
+    var showDebugDialog by remember { mutableStateOf(false) }
+    var enableEverything by rememberSaveable { mutableStateOf(startImmediately) }
     val activityScope = rememberCoroutineScope()
 
     val isProcessingGrantingRequest by viewModel.isProcessingGrantingRequest.collectAsStateWithLifecycle()
@@ -98,25 +101,29 @@ fun PermissionsScreen(
     // Permission launchers must live inside a composable - the system dialog can only be
     // triggered from a composable context.  We pass these into the ViewModel as lambdas so
     // the ViewModel never needs to import Compose or hold a UI reference.
-    val permissionRequestLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-        // false = permission denied or permanently blocked by the OS.
-        // In the blocked case we open App Info so the user can grant it manually.
-        if (!result) {
-            activityContext.openAppSettings()
+    val permissionRequestLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) { results ->
+        if (results.values.any { granted -> !granted }) {
+            enableEverything = false
         }
         onPermissionGranted()
     }
-    val folderPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        if (uri != null) {
-            // takePersistableUriPermission locks in long-term read/write access so the
-            // folder URI remains valid after a device reboot.
-            activityContext.contentResolver.takePersistableUriPermission(
-                uri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            AppPreferences(activityContext).setRecordingFolderUri(uri)
+
+    fun continueSetup() {
+        viewModel.onGrantAccess(
+            status = status,
+            onPermissionGranted = onPermissionGranted,
+            requestRuntimePermissions = { permissions ->
+                permissionRequestLauncher.launch(permissions)
+            },
+        )
+    }
+
+    LaunchedEffect(status, enableEverything, isProcessingGrantingRequest) {
+        if (enableEverything && !status.isComplete() && !isProcessingGrantingRequest) {
+            continueSetup()
         }
-        onPermissionGranted()
     }
 
     // Run safety check once Shizuku permission is granted
@@ -260,12 +267,12 @@ fun PermissionsScreen(
     PermissionsContent(
         status = status,
         onGrantAccessButtonClick = {
-            viewModel.onGrantAccess(
-                status = status,
-                onPermissionGranted = onPermissionGranted,
-                requestRuntimePermission = { permission -> permissionRequestLauncher.launch(permission) },
-                launchFolderPicker = { folderPickerLauncher.launch(null) },
-            )
+            if (enableEverything) {
+                continueSetup()
+            } else {
+                enableEverything = true
+                onEnableEverythingStarted()
+            }
         },
         onCallDetectionModeChanged = { newMode ->
             viewModel.onCallDetectionModeChanged(newMode)
@@ -349,7 +356,6 @@ fun PermissionsContent(
                     Triple(stringResource(R.string.permission_notifications_label), stringResource(R.string.permission_notifications_description), status.notificationsGranted to Icons.Default.QuestionAnswer),
                     Triple(stringResource(R.string.permission_contacts_label), stringResource(R.string.permission_contacts_description), status.contactsGranted to Icons.Default.RecentActors),
                     Triple(stringResource(R.string.permission_battery_label), stringResource(R.string.permission_battery_description), status.batteryExempted to Icons.Default.BatterySaver),
-                    Triple(stringResource(R.string.settings_recording_folder_label), stringResource(R.string.permission_storage_description), status.storageSelected to Icons.Default.Folder)
                 )
 
                 // How global permissions
@@ -431,13 +437,18 @@ fun PermissionsContent(
                 } else {
                     Text(
                         text = when {
-                            status.isComplete()       -> stringResource(R.string.general_continue)
-                            !status.shizukuRunning    -> stringResource(R.string.permission_shizuku_open)
-                            else                      -> stringResource(R.string.permissions_grant_access)
+                            status.isComplete() -> stringResource(R.string.general_continue)
+                            else -> stringResource(R.string.callscribe_enable_everything)
                         }
                     )
                 }
             }
+            Text(
+                text = stringResource(R.string.callscribe_enable_everything_explanation),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
+            )
         }
     }
 }
@@ -527,7 +538,7 @@ private fun PermissionsScreenPreview() {
             ),
             onGrantAccessButtonClick = {},
             onCallDetectionModeChanged = {},
-            isProcessingGrantingRequest = false
+            isProcessingGrantingRequest = false,
         )
     }
 }

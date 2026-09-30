@@ -27,8 +27,8 @@ The easiest installation is the prebuilt APK from GitHub:
    [Shizuku from Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api).
    If Google Play is unavailable, use the [official GitHub release](https://github.com/RikkaApps/Shizuku/releases/latest).
    Start Shizuku using **Wireless debugging** by following its on-screen pairing steps.
-5. Open CallScribe, accept the legal notice, and grant the requested phone, call-log, contacts, notification, battery, and Shizuku permissions.
-6. Open **Models** and download **Parakeet TDT 0.6B v3 (int8)**. It needs about 670 MB plus temporary download space.
+5. Open CallScribe, review the legal notice, then tap **Accept and enable everything**. CallScribe automatically advances through setup and queues the default Parakeet model.
+6. Approve the Android and Shizuku security confirmations as they appear. Android does not allow apps to approve these dialogs for you. The Parakeet download needs about 670 MB plus temporary download space and waits for Wi-Fi by default.
 7. Make a short test call and verify that both sides are audible before relying on automatic recording.
 
 Shizuku normally must be started again after every non-rooted phone reboot. The

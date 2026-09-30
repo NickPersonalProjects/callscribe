@@ -11,6 +11,9 @@
     <!-- GENERAL MESSAGES & APP LEVEL               -->
     <!-- ========================================== -->
     <string name="app_name" translatable="false">CallScribe</string>
+    <string name="callscribe_accept_and_enable">Accept and enable everything</string>
+    <string name="callscribe_enable_everything">Enable everything</string>
+    <string name="callscribe_enable_everything_explanation">One tap starts the complete setup. Android and Shizuku will still show the security confirmations that apps cannot approve for you.</string>
     <string name="general_close">Close</string>
     <string name="general_continue">Continue</string>
     <string name="general_ok">OK</string>
@@ -121,7 +124,7 @@
 
     <!-- Permissions Screen -->
     <string name="permissions_title">Permissions Setup</string>
-    <string name="permissions_intro">We need a few permissions to start recoding. Tap "Grant Access" and approve each item.</string>
+    <string name="permissions_intro">Approve the Android and Shizuku security confirmations as they appear. CallScribe automatically advances to the next step.</string>
     <string name="permissions_grant_access">Grant Access</string>
     <string name="permissions_status_granted">Granted</string>
     <string name="permissions_status_required">Required</string>

@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
@@ -45,6 +46,9 @@ import com.nicholaston.callscribe.ui.models.ModelsScreen
 import com.nicholaston.callscribe.ui.screens.AboutScreen
 import com.nicholaston.callscribe.ui.settings.WatchedFoldersScreen
 import com.nicholaston.callscribe.ui.settings.CallScribeSettingsScreen
+import com.nicholaston.callscribe.models.ModelDownloadWorker
+import com.nicholaston.callscribe.models.ModelRegistry
+import com.nicholaston.callscribe.models.ModelStore
 
 /**
  * Top-level router composable called from [MainActivity].
@@ -70,6 +74,7 @@ fun AppNavigationScreen() {
     // CallScribe: Calls is the post-onboarding home, with additive feature destinations.
     var callScribeDestination by remember { mutableStateOf(CallScribeDestination.Calls) }
     var selectedCallId by remember { mutableStateOf<Long?>(null) }
+    var enableEverythingRequested by rememberSaveable { mutableStateOf(false) }
     val callScribeContainer =
         (activityContext.applicationContext as ShizuApplication).callScribeContainer
 
@@ -108,6 +113,20 @@ fun AppNavigationScreen() {
     // which is what caused the stale-state bug that existed before this architecture.
     val screenState = resolveScreen(onboardingStatus)
 
+    LaunchedEffect(screenState, enableEverythingRequested) {
+        if (screenState == AppScreen.Settings && enableEverythingRequested) {
+            val model = ModelRegistry.require(ModelRegistry.DEFAULT_MODEL_ID)
+            if (!ModelStore(activityContext).isInstalled(model)) {
+                ModelDownloadWorker.enqueue(
+                    context = activityContext,
+                    modelId = model.id,
+                    wifiOnly = true,
+                )
+            }
+            enableEverythingRequested = false
+        }
+    }
+
     // Trigger when the app resume activity, we want to refresh the navigation screens since
     // the user may have changed something in the system settings (e.g. granted a permission) that affects the onboarding status.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
@@ -142,6 +161,7 @@ fun AppNavigationScreen() {
             when (targetScreenState) {
                 AppScreen.Disclaimer -> DisclaimerScreen(
                     onContinue = {
+                        enableEverythingRequested = true
                         preferences.setDisclaimerAccepted(true)
                         appNavViewModel.refresh()
                     }
@@ -149,7 +169,9 @@ fun AppNavigationScreen() {
 
                 AppScreen.Permissions -> PermissionsScreen(
                     status              = onboardingStatus,
-                    onPermissionGranted = { appNavViewModel.refresh() }
+                    onPermissionGranted = { appNavViewModel.refresh() },
+                    onEnableEverythingStarted = { enableEverythingRequested = true },
+                    startImmediately = enableEverythingRequested,
                 )
 
                 AppScreen.Settings -> {

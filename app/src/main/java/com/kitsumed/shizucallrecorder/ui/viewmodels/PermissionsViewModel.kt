@@ -12,6 +12,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.provider.Settings
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
@@ -21,7 +22,6 @@ import com.kitsumed.shizucallrecorder.data.AppPreferences
 import com.kitsumed.shizucallrecorder.integrations.shizuku.ShizukuConnectionManager
 import com.kitsumed.shizucallrecorder.onboarding.OnboardingStatus
 import com.kitsumed.shizucallrecorder.services.callDetection.CallDetectionMode
-import com.kitsumed.shizucallrecorder.system.openAppSettings
 import com.kitsumed.shizucallrecorder.system.openShizukuManager
 import com.kitsumed.shizucallrecorder.system.permissions.AppPermission
 import com.kitsumed.shizucallrecorder.ui.screens.PermissionsScreen
@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import rikka.shizuku.Shizuku
 
 /**
  * The "Brain" of the permissions setup flow.
@@ -64,29 +65,39 @@ class PermissionsViewModel(application: Application) : AndroidViewModel(applicat
      * Works through each missing setup step in the correct order and invokes the matching
      * callback. Once all steps are complete, calls [onPermissionGranted] so the UI can refresh.
      *
-     * For each runtime permission:
-     *  - First press → the system permission dialog is shown via [requestRuntimePermission].
-     *  - If the OS cannot show the popup (permanent denial), [PermissionsScreen] handles the
-     *    fallback by calling [openAppSettings] in the launcher result callback.
-     *
      * @param status                   Current state of every permission and setup step.
-     * @param requestRuntimePermission Launches the system permission dialog for a given permission.
-     * @param launchFolderPicker       Opens the folder picker to choose a recording folder.
+     * @param requestRuntimePermissions Launches one batched Android runtime-permission request.
      * @param onPermissionGranted      Called after any step completes so the UI can refresh.
      */
     @SuppressLint("BatteryLife")
     fun onGrantAccess(
         status: OnboardingStatus.Status,
-        requestRuntimePermission: (String) -> Unit,
-        launchFolderPicker: () -> Unit,
+        requestRuntimePermissions: (Array<String>) -> Unit,
         onPermissionGranted: () -> Unit
     ) {
         // NOTE: Don't forget to return after each action, otherwise it will call dynamic permission requests prematurely and break the flow.
         when {
             !status.shizukuRunning           -> {appContext.openShizukuManager(); return}
-            !status.shizukuPermissionGranted -> {ShizukuConnectionManager.requestPermission(); return}
-            !status.notificationsGranted     -> {requestRuntimePermission(Manifest.permission.POST_NOTIFICATIONS); return}
-            !status.contactsGranted          -> {requestRuntimePermission(Manifest.permission.READ_CONTACTS); return}
+            !status.shizukuPermissionGranted -> {
+                requestShizukuPermission(onPermissionGranted)
+                return
+            }
+        }
+
+        val missingRuntimePermissions = buildList {
+            if (!status.notificationsGranted) add(Manifest.permission.POST_NOTIFICATIONS)
+            if (!status.contactsGranted) add(Manifest.permission.READ_CONTACTS)
+            status.callDetectionMode.requiredPermissions
+                .filterIsInstance<AppPermission.Runtime>()
+                .filterNot(status.callDetectionModeGrantedPermissions::contains)
+                .mapTo(this) { it.manifestString }
+        }.distinct()
+        if (missingRuntimePermissions.isNotEmpty()) {
+            requestRuntimePermissions(missingRuntimePermissions.toTypedArray())
+            return
+        }
+
+        when {
             !status.batteryExempted          -> {
                 appContext.startActivity(
                     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
@@ -96,7 +107,6 @@ class PermissionsViewModel(application: Application) : AndroidViewModel(applicat
                 )
                 return
             }
-            !status.storageSelected          -> {launchFolderPicker() ; return}
             else                             -> { /* All steps completed, all global permission granted.*/ }
         }
 
@@ -105,10 +115,9 @@ class PermissionsViewModel(application: Application) : AndroidViewModel(applicat
             status.callDetectionModeGrantedPermissions.contains(currentPermission)
         }
 
-        when (val nextToRequest = missingPermissions.first()) {
-            is AppPermission.Runtime -> {
-                requestRuntimePermission(nextToRequest.manifestString)
-            }
+        when (val nextToRequest = missingPermissions.firstOrNull()) {
+            null -> onPermissionGranted()
+            is AppPermission.Runtime -> error("Runtime permissions must be requested as a batch")
             is AppPermission.Elevated -> {
                 _isProcessingGrantingRequest.value = true
                 viewModelScope.launch(Dispatchers.IO) {
@@ -126,8 +135,21 @@ class PermissionsViewModel(application: Application) : AndroidViewModel(applicat
                 }
             }
         }
-        // Always trigger a refresh of the UI to detect and show new permission changes.
-        onPermissionGranted()
+    }
+
+    private fun requestShizukuPermission(onPermissionGranted: () -> Unit) {
+        val listener = object : Shizuku.OnRequestPermissionResultListener {
+            override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
+                if (requestCode != SHIZUKU_PERMISSION_REQUEST_CODE) return
+                Shizuku.removeRequestPermissionResultListener(this)
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    _errorMessage.value = "Shizuku access is required to record calls."
+                }
+                onPermissionGranted()
+            }
+        }
+        Shizuku.addRequestPermissionResultListener(listener)
+        Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
     }
 
     /**
@@ -143,5 +165,9 @@ class PermissionsViewModel(application: Application) : AndroidViewModel(applicat
      */
     fun dissmissError() {
         _errorMessage.value = null
+    }
+
+    private companion object {
+        const val SHIZUKU_PERMISSION_REQUEST_CODE = 4_202
     }
 }

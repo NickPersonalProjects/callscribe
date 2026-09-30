@@ -205,7 +205,7 @@ fun DisclaimerScreen(onContinue: () -> Unit, modifier: Modifier = Modifier) {
                     Text(text = stringResource(R.string.disclaimer_must_read))
                 }
                 else {
-                    Text(text = stringResource(R.string.general_continue))
+                    Text(text = stringResource(R.string.callscribe_accept_and_enable))
                 }
             }
         }
