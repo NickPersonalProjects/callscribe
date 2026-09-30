@@ -1,4 +1,4 @@
-name: "CodeQL Analysis"
+name: "CallScribe CodeQL Analysis"
 
 on:
   pull_request:
@@ -43,10 +43,10 @@ jobs:
             build-mode: none
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout CallScribe
         uses: actions/checkout@v6
 
-      # Build steps should replicate build-app.yml file
+      # Keep the Java/Kotlin build setup aligned with the CallScribe Android workflow.
       - name: Setup Java 17
         if: matrix.language == 'java-kotlin'
         uses: actions/setup-java@v5
@@ -60,15 +60,14 @@ jobs:
         with:
           validate-wrappers: true
           cache-provider: basic
-          gradle-version: '9.4.1'
-          # MUST BE READ ONLY TO PREVENT CACHE POISONING
           cache-read-only: true
-      
-      - name: Generate Missing Gradle Wrapper Scripts
+
+      - name: Restore verified scrcpy server asset
         if: matrix.language == 'java-kotlin'
-        env:
-          SKIP_SIGNING: true # Prevent build.gradle.kts from throwing error due to missing signing info
-        run: gradle wrapper --no-daemon
+        uses: actions/cache/restore@v5
+        with:
+          path: app/build/generated/scrcpy/assets
+          key: ${{ runner.os }}-scrcpy-server-v4.0-84924bd564a1eb6089c872c7521f968058977f91f5ff02514a8c74aff3210f3a
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -76,13 +75,13 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
 
-      - name: Build App for CodeQL Analysis
+      - name: Build CallScribe for CodeQL analysis
         if: matrix.language == 'java-kotlin'
         env:
           SKIP_SIGNING: true
         run: |
           chmod +x gradlew
-          ./gradlew clean assembleDebug --no-build-cache --no-daemon --stacktrace
+          ./gradlew assembleDebug --no-build-cache --no-daemon --stacktrace
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4

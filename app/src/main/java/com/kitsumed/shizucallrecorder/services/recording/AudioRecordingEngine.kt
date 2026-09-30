@@ -26,6 +26,9 @@ import com.kitsumed.shizucallrecorder.integrations.scrcpy.ServerExtractor
 import com.kitsumed.shizucallrecorder.system.storage.SafHelper
 import com.kitsumed.shizucallrecorder.utils.AppLogger
 import com.kitsumed.shizucallrecorder.utils.RecordingFileNameFormatter
+import com.nicholaston.callscribe.data.CallScribeSettings
+import com.nicholaston.callscribe.data.StorageMode
+import com.nicholaston.callscribe.storage.AppPrivateRecordingStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,6 +37,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.flow.first
 
 /**
  * Manages the audio recording pipeline, including the connection to the shell service, reading from the audio pipe,
@@ -91,6 +95,10 @@ class AudioRecordingEngine {
      */
     var currentCodecEnum: ScrcpyAudioCodec = ScrcpyAudioCodec.OPUS
 
+    /** CallScribe: wall-clock start used to persist call duration after finalization. */
+    var recordingStartedAt: Long = 0
+        private set
+
     /**
      * Coroutine scope for reading from the audio pipe data returned by the shell service.
      * Initialised in [startPipeline] and cancelled in [release].
@@ -115,8 +123,9 @@ class AudioRecordingEngine {
         initializationMetadata = metadata
         val preferences = AppPreferences(context)
         val folderUri = preferences.getRecordingFolderUri()
-
-        if (!SafHelper.isFolderValid(context, folderUri)) {
+        // CallScribe: app-private output is the default; SAF remains available for compatibility.
+        val storageMode = runBlocking { CallScribeSettings(context).values.first().storageMode }
+        if (storageMode == StorageMode.SAF_FOLDER && !SafHelper.isFolderValid(context, folderUri)) {
             throw PipelineInitializationException(
                 userFriendlyMessage = context.getString(R.string.recording_error_folder_missing),
                 technicalLogMessage = "Cannot start recording: Selected Output folder is missing, invalid, or we do not have permission to write to it"
@@ -131,16 +140,22 @@ class AudioRecordingEngine {
 
         val fileName = RecordingFileNameFormatter.formatFileName(context, metadata, codecEnum)
 
-        val safResult = SafHelper.createAudioFile(context, folderUri, fileName, codecEnum.mimeType)
-            ?: throw PipelineInitializationException(
-                userFriendlyMessage = context.getString(R.string.recording_error_file_creation),
-                technicalLogMessage = "Failed to create audio file in SAF storage"
-            )
+        val output = if (storageMode == StorageMode.APP_PRIVATE) {
+            runCatching { AppPrivateRecordingStorage.create(context, fileName) }.getOrNull()
+        } else {
+            SafHelper.createAudioFile(context, folderUri!!, fileName, codecEnum.mimeType)?.let {
+                com.nicholaston.callscribe.storage.RecordingOutput(it.uri, it.descriptor, it.displayName)
+            }
+        } ?: throw PipelineInitializationException(
+            userFriendlyMessage = context.getString(R.string.recording_error_file_creation),
+            technicalLogMessage = "Failed to create recording output in $storageMode storage",
+        )
 
-        AppLogger.d( "Created SAF recording file: ${safResult.uri}")
+        AppLogger.d( "Created recording file: ${output.uri}")
 
-        currentRecordingUri = safResult.uri
-        outputPfd = safResult.descriptor
+        currentRecordingUri = output.uri
+        outputPfd = output.descriptor
+        recordingStartedAt = System.currentTimeMillis()
 
         val serverPath = ScrcpyConfig.getServerPath(context)
         if (!ServerExtractor.ensureServerFile(context, serverPath)) {
@@ -150,7 +165,7 @@ class AudioRecordingEngine {
             )
         }
 
-        scrcpyAudioMuxer = ScrcpyAudioMuxer(outputPfd!!.fileDescriptor, safResult.displayName)
+        scrcpyAudioMuxer = ScrcpyAudioMuxer(outputPfd!!.fileDescriptor, output.displayName)
 
         try {
             audioReadPipePfd = service.startRecording(
@@ -256,7 +271,11 @@ class AudioRecordingEngine {
         release(shellService)
         try {
             currentRecordingUri?.let { uri ->
-                DocumentFile.fromSingleUri(context, uri)?.delete()
+                if (uri.scheme == "file") {
+                    AppPrivateRecordingStorage.delete(context, uri)
+                } else {
+                    DocumentFile.fromSingleUri(context, uri)?.delete()
+                }
             }
             AppLogger.d( "Cleaned up empty file after start failure")
         } catch (e: Exception) {

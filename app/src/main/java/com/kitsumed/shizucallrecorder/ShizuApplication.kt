@@ -11,14 +11,24 @@ package com.kitsumed.shizucallrecorder
 import android.app.Application
 import com.kitsumed.shizucallrecorder.services.callDetection.CallDetectionOrchestrator
 import com.kitsumed.shizucallrecorder.utils.AppLogger
+import com.nicholaston.callscribe.data.AppContainer
+import com.nicholaston.callscribe.work.ImportScanScheduler
+import com.nicholaston.callscribe.work.RetentionWorker
 
 /**
  * ShizuApplication is run when the app process is created. Can be seen as the very first entry point of the app.
  */
 class ShizuApplication : Application() {
+    // CallScribe: manual dependency graph for the additive fork features.
+    lateinit var callScribeContainer: AppContainer
+        private set
+
     override fun onCreate() {
         super.onCreate()
         AppLogger.init(applicationContext)
+        callScribeContainer = AppContainer(applicationContext)
+        RetentionWorker.schedule(applicationContext)
+        ImportScanScheduler.schedulePeriodic(applicationContext)
         // Sync configurations down to PackageManager mapping immediately on launch
         CallDetectionOrchestrator(applicationContext).syncComponents()
     }

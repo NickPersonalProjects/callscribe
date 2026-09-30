@@ -12,8 +12,8 @@
     <string name="general_incoming">przychodzące</string>
     <string name="general_outgoing">wychodzące</string>
     <string name="general_system_limitation">Ograniczenia systemu</string>
-    <string name="general_system_limitation_message">ShizuCallRecorder nie będzie działać na tym urządzeniu, ponieważ Twoja aplikacja powłoki nie posiada wymaganych uprawnień:\n\n%1$s\n\nNie można nic z tym zrobić – aplikacja nie może działać i zostanie teraz zamknięta.</string>
-    <string name="disclaimer_title">Witaj w ShizuCallRecorder</string>
+    <string name="general_system_limitation_message">CallScribe nie będzie działać na tym urządzeniu, ponieważ Twoja aplikacja powłoki nie posiada wymaganych uprawnień:\n\n%1$s\n\nNie można nic z tym zrobić – aplikacja nie może działać i zostanie teraz zamknięta.</string>
+    <string name="disclaimer_title">Witaj w CallScribe</string>
     <string name="disclaimer_wiki_link_KEYWORD">Wiki</string>
     <string name="disclaimer_introduction">Zanim zaczniesz, otwórz i zapoznaj się z instrukcją konfiguracji na naszej stronie Wiki. Następnie przeczytaj poniższe zastrzeżenie.</string>
     <string name="disclaimer_checkbox_label">Zapoznałem się z oświadczeniem o wyłączeniu odpowiedzialności i rozumiem wymogi prawne, obowiązki oraz ograniczenia techniczne związane z tym oprogramowaniem.</string>
@@ -138,8 +138,8 @@
     <string name="settings_shizuku_keep_alive_desc">Nie wysyłaj polecenia zatrzymania</string>
     <string name="sponsor_title">Wesprzyj projekt</string>
     <string name="sponsor_body_title">Cześć, jestem kitsumed (Med)! 👋</string>
-    <string name="sponsor_body">Od najmłodszych lat interesuję się technologią i komputerami. Większość moich projektów powstaje w wyniku poszukiwania rozwiązań dla moich własnych ograniczeń fizycznych lub umysłowych, podczas gdy inne są po prostu przypadkowymi przebłyskami inspiracji.\n\nAplikacja ShizuCallRecorder powstała z osobistej potrzeby związanej z jedną z moich niepełnosprawności. Przez kilka lat szukałem darmowej aplikacji do nagrywania rozmów opartej na otwartym oprogramowaniu (FOSS), która działałaby na urządzeniach bez uprawnień root, ale nie udało mi się takiej znaleźć. Po prostu nie było takiej aplikacji. Postanowiłem więc stworzyć własną i udostępniłem ją publicznie.\n\nWiele wolnego czasu poświęcam na naukę, tworzenie i utrzymywanie oprogramowania open source. Wasze wsparcie bezpośrednio pomaga mi finansowo w codziennym życiu i motywuje mnie do dalszego tworzenia wysokiej jakości narzędzi dla społeczności.\n\nWierzę w to, że moje aplikacje powinny być wolne od agresywnych reklam i śledzenia naruszającego prywatność. Jeśli moje narzędzia okazały się przydatne w Twoim codziennym życiu, rozważ wsparcie!</string>
-    <string name="sponsor_days_used">Korzystasz z aplikacji ShizuCallRecorder już od %1$d dni!</string>
+    <string name="sponsor_body">Od najmłodszych lat interesuję się technologią i komputerami. Większość moich projektów powstaje w wyniku poszukiwania rozwiązań dla moich własnych ograniczeń fizycznych lub umysłowych, podczas gdy inne są po prostu przypadkowymi przebłyskami inspiracji.\n\nAplikacja CallScribe powstała z osobistej potrzeby związanej z jedną z moich niepełnosprawności. Przez kilka lat szukałem darmowej aplikacji do nagrywania rozmów opartej na otwartym oprogramowaniu (FOSS), która działałaby na urządzeniach bez uprawnień root, ale nie udało mi się takiej znaleźć. Po prostu nie było takiej aplikacji. Postanowiłem więc stworzyć własną i udostępniłem ją publicznie.\n\nWiele wolnego czasu poświęcam na naukę, tworzenie i utrzymywanie oprogramowania open source. Wasze wsparcie bezpośrednio pomaga mi finansowo w codziennym życiu i motywuje mnie do dalszego tworzenia wysokiej jakości narzędzi dla społeczności.\n\nWierzę w to, że moje aplikacje powinny być wolne od agresywnych reklam i śledzenia naruszającego prywatność. Jeśli moje narzędzia okazały się przydatne w Twoim codziennym życiu, rozważ wsparcie!</string>
+    <string name="sponsor_days_used">Korzystasz z aplikacji CallScribe już od %1$d dni!</string>
     <string name="sponsor_way_to_help">Jak możesz pomóc:</string>
     <string name="sponsor_way_github_sponsor_title">Zostań sponsorem GitHub</string>
     <string name="sponsor_way_github_sponsor_description">Zdobądź osiągnięcie „Public Sponsor”, umieść swój profil na mojej stronie i pomóż mi finansowo utrzymać się oraz kontynuować moją działalność związaną z oprogramowaniem open source.</string>
@@ -148,13 +148,13 @@
     <string name="sponsor_way_contribute_title">Wnieś swój wkład</string>
     <string name="sponsor_way_contribute_description">Pomóż przy kodzie, zgłaszaniu błędów lub tłumaczeniach.</string>
     <string name="sponsor_way_share_title">Udostępnij aplikację</string>
-    <string name="sponsor_way_share_description">Powiedz znajomym lub społeczności o ShizuCallRecorder.</string>
+    <string name="sponsor_way_share_description">Powiedz znajomym lub społeczności o CallScribe.</string>
     <string name="sponsor_github_sponsor_button">Wesprzyj na GitHubie</string>
     <string name="sponsor_github_star_button">Dodaj gwiazdkę</string>
     <string name="sponsor_maybe_later_button">Może później</string>
     <string name="sponsor_notification_body">Ten projekt jest całkowicie bezpłatny, ma otwarty kod źródłowy i nie zawiera żadnych reklam. Jeśli to narzędzie pomogło Ci w codziennym życiu, rozważ sprawdzenie sposobów na wsparcie rozwoju projektu!</string>
     <string name="sponsor_notification_action">Zobacz opcje wsparcia</string>
-    <string name="sponsor_notification_call_to_action_title">Podoba Ci się ShizuCallRecorder?</string>
+    <string name="sponsor_notification_call_to_action_title">Podoba Ci się CallScribe?</string>
     <string name="sponsor_notification_call_to_action">Potrzebujemy Twojej pomocy!</string>
     <string name="permission_manage_ongoing_calls_label">Zarządzanie trwającymi połączeniam</string>
     <string name="permission_manage_ongoing_calls_description">Uprawnienie AppOps automatycznie przyznawane dzięki Shizuku. Wymagane do wykrywania połączeń przez InCallService.</string>

@@ -13,8 +13,8 @@
     <string name="general_outgoing">giden</string>
     <string name="general_reset">Sıfırla</string>
     <string name="general_system_limitation">Sistem kısıtlaması</string>
-    <string name="general_system_limitation_message">ShizuCallRecorder bu cihazda çalışmayacak; shell uygulamanız gerekli izinlere sahip değil:\n\n%1$s\n\nBu konuda yapabileceğiniz bir şey yok; uygulama işlevini yerine getiremez ve şimdi kapanacak.</string>
-    <string name="disclaimer_title">ShizuCallRecorder uygulamasına hoş geldiniz</string>
+    <string name="general_system_limitation_message">CallScribe bu cihazda çalışmayacak; shell uygulamanız gerekli izinlere sahip değil:\n\n%1$s\n\nBu konuda yapabileceğiniz bir şey yok; uygulama işlevini yerine getiremez ve şimdi kapanacak.</string>
+    <string name="disclaimer_title">CallScribe uygulamasına hoş geldiniz</string>
     <string name="disclaimer_wiki_link_KEYWORD">Wiki</string>
     <string name="disclaimer_introduction">Devam etmeden önce lütfen Wiki sayfamızdaki kurulum talimatlarını açıp okuyun. Ardından aşağıdaki yasal uyarıyı okuyun.</string>
     <string name="disclaimer_checkbox_label">Yasal uyarıyı okudum; bu yazılımın yasal gerekliliklerini, sorumluluklarını ve teknik sınırlamalarını anladım.</string>
@@ -138,8 +138,8 @@
     <string name="recording_shizuku_auth_key_missing">Shizuku Intent\'leri kimlik doğrulama anahtarı eksik. Lütfen uygulama ayarlarına girin.</string>
     <string name="sponsor_title">Projeyi destekle</string>
     <string name="sponsor_body_title">Merhaba, ben kitsumed (Med)! 👋</string>
-    <string name="sponsor_body">Gençliğimden beri teknoloji ve bilgisayarlarla ilgileniyorum. Projelerimin çoğu, kendi fiziksel veya zihinsel engellerime yönelik çözümler üretme çabamdan doğuyor; bazıları ise anlık ilham kıvılcımlarıyla ortaya çıkıyor.\n\nShizuCallRecorder, engellerimden biriyle ilgili kişisel bir ihtiyaçtan doğdu. Yıllar boyunca, root işlemi gerektirmeyen cihazlarda çalışacak ücretsiz ve açık kaynaklı (FOSS) bir çağrı kaydetme uygulaması aradım ancak bulamadım. Öyle bir uygulama yoktu. Bu yüzden kendi uygulamamı geliştirmeye ve onu herkesin kullanımına sunmaya karar verdim.\n\nBoş zamanımın büyük bir kısmını açık kaynaklı yazılımlar öğrenmeye, geliştirmeye ve bunların bakımını yapmaya ayırıyorum. Desteğiniz hem günlük yaşamımda bana maddi açıdan yardımcı oluyor hem de topluluk için yüksek kaliteli araçlar üretmeye devam etmem konusunda beni motive ediyor.\n\nUygulamalarımı rahatsız edici reklamlardan ve gizliliği ihlal eden takip mekanizmalarından uzak tutmaya önem veriyorum. Eğer geliştirdiğim araçlar günlük yaşamınızda işinize yaradıysa, lütfen destek olmayı düşünün!</string>
-    <string name="sponsor_days_used">ShizuCallRecorder uygulamasını %1$d gündür kullanıyorsunuz!</string>
+    <string name="sponsor_body">Gençliğimden beri teknoloji ve bilgisayarlarla ilgileniyorum. Projelerimin çoğu, kendi fiziksel veya zihinsel engellerime yönelik çözümler üretme çabamdan doğuyor; bazıları ise anlık ilham kıvılcımlarıyla ortaya çıkıyor.\n\nCallScribe, engellerimden biriyle ilgili kişisel bir ihtiyaçtan doğdu. Yıllar boyunca, root işlemi gerektirmeyen cihazlarda çalışacak ücretsiz ve açık kaynaklı (FOSS) bir çağrı kaydetme uygulaması aradım ancak bulamadım. Öyle bir uygulama yoktu. Bu yüzden kendi uygulamamı geliştirmeye ve onu herkesin kullanımına sunmaya karar verdim.\n\nBoş zamanımın büyük bir kısmını açık kaynaklı yazılımlar öğrenmeye, geliştirmeye ve bunların bakımını yapmaya ayırıyorum. Desteğiniz hem günlük yaşamımda bana maddi açıdan yardımcı oluyor hem de topluluk için yüksek kaliteli araçlar üretmeye devam etmem konusunda beni motive ediyor.\n\nUygulamalarımı rahatsız edici reklamlardan ve gizliliği ihlal eden takip mekanizmalarından uzak tutmaya önem veriyorum. Eğer geliştirdiğim araçlar günlük yaşamınızda işinize yaradıysa, lütfen destek olmayı düşünün!</string>
+    <string name="sponsor_days_used">CallScribe uygulamasını %1$d gündür kullanıyorsunuz!</string>
     <string name="sponsor_way_to_help">Yardımcı olabileceğiniz seçenekler:</string>
     <string name="sponsor_way_github_sponsor_title">GitHub Sponsoru olun</string>
     <string name="sponsor_way_github_sponsor_description">\"Public Sponsor\" (Halka Açık Sponsor) başarısını kazanın, profilinizin sayfamda yer almasını sağlayın ve hem beni hem de açık kaynak çalışmalarımı maddi olarak destekleyin.</string>
@@ -148,13 +148,13 @@
     <string name="sponsor_way_contribute_title">Katkıda bulunun</string>
     <string name="sponsor_way_contribute_description">Kod, hata bildirimleri veya çeviriler konusunda yardımcı olun.</string>
     <string name="sponsor_way_share_title">Uygulamayı paylaşın</string>
-    <string name="sponsor_way_share_description">Arkadaşlarınıza veya topluluğunuza ShizuCallRecorder uygulamasından bahsedin.</string>
+    <string name="sponsor_way_share_description">Arkadaşlarınıza veya topluluğunuza CallScribe uygulamasından bahsedin.</string>
     <string name="sponsor_github_sponsor_button">GitHub üzerinden sponsor olun</string>
     <string name="sponsor_github_star_button">Repoyu yıldızlayın</string>
     <string name="sponsor_maybe_later_button">Belki daha sonra</string>
     <string name="sponsor_notification_body">Bu proje ücretsizdir, açık kaynaklıdır ve hiç reklam içermez. Eğer bu araç günlük yaşamınızda size yardımcı olduysa, projenin geliştirilmesine destek olma yollarını incelemeyi düşünebilirsiniz!</string>
     <string name="sponsor_notification_action">Destekleme seçeneklerini görüntüle</string>
-    <string name="sponsor_notification_call_to_action_title">ShizuCallRecorder uygulamasından memnun musunuz?</string>
+    <string name="sponsor_notification_call_to_action_title">CallScribe uygulamasından memnun musunuz?</string>
     <string name="sponsor_notification_call_to_action">Yardımınıza ihtiyacımız var!</string>
     <string name="permission_manage_ongoing_calls_label">Devam eden çağrıları yönet</string>
     <string name="permission_manage_ongoing_calls_description">Shizuku ile AppOps izni otomatik olarak verilir. InCallService aracılığıyla aramaları algılamak için gereklidir.</string>

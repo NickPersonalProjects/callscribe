@@ -8,6 +8,7 @@
 
 package com.kitsumed.shizucallrecorder
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -35,10 +36,15 @@ import com.kitsumed.shizucallrecorder.onboarding.OnboardingStatus
 import com.kitsumed.shizucallrecorder.ui.screens.DisclaimerScreen
 import com.kitsumed.shizucallrecorder.ui.screens.PermissionsScreen
 import com.kitsumed.shizucallrecorder.ui.screens.SettingsScreen
-import com.kitsumed.shizucallrecorder.ui.screens.SponsorScreen
 import com.kitsumed.shizucallrecorder.ui.theme.ShizuCallRecorderTheme
 import com.kitsumed.shizucallrecorder.ui.viewmodels.AppNavigationViewModel
 import com.kitsumed.shizucallrecorder.ui.viewmodels.SettingsViewModel
+import com.nicholaston.callscribe.ui.calls.CallDetailScreen
+import com.nicholaston.callscribe.ui.calls.CallsScreen
+import com.nicholaston.callscribe.ui.models.ModelsScreen
+import com.nicholaston.callscribe.ui.screens.AboutScreen
+import com.nicholaston.callscribe.ui.settings.WatchedFoldersScreen
+import com.nicholaston.callscribe.ui.settings.CallScribeSettingsScreen
 
 /**
  * Top-level router composable called from [MainActivity].
@@ -61,6 +67,11 @@ import com.kitsumed.shizucallrecorder.ui.viewmodels.SettingsViewModel
 @Composable
 fun AppNavigationScreen() {
     val activityContext = LocalContext.current
+    // CallScribe: Calls is the post-onboarding home, with additive feature destinations.
+    var callScribeDestination by remember { mutableStateOf(CallScribeDestination.Calls) }
+    var selectedCallId by remember { mutableStateOf<Long?>(null) }
+    val callScribeContainer =
+        (activityContext.applicationContext as ShizuApplication).callScribeContainer
 
     // AppNavigationViewModel - the "Brain" for routing: owns onboarding state.
     val appNavViewModel: AppNavigationViewModel = viewModel()
@@ -142,26 +153,61 @@ fun AppNavigationScreen() {
                 )
 
                 AppScreen.Settings -> {
-                    val lastReminderTime = preferences.getLastForcedReminderSupportProjectTimeInApp()
-                    val currentTime = System.currentTimeMillis()
-
-                    var showSponsorScreen by remember {
-                        // Check if it's been more than a year since the last reminder. 31536000000 ms = 1 year.
-                        mutableStateOf(currentTime - lastReminderTime > 31536000000L)
+                    // CallScribe: System back consistently returns feature destinations to Calls.
+                    BackHandler(callScribeDestination != CallScribeDestination.Calls) {
+                        callScribeDestination = CallScribeDestination.Calls
+                        selectedCallId = null
                     }
-
-                    if (showSponsorScreen) {
-                        SponsorScreen(onDismiss = {
-                            preferences.setLastForcedReminderSupportProjectTimeInApp(currentTime)
-                            // We also update the notification time since it work by opening the app and then having this logic
-                            // show the sponsor screen. Showing it again after they have already seen it would be annoying.
-                            preferences.setLastForcedReminderSupportProjectTimeNotification(currentTime)
-                            showSponsorScreen = false // Trigger recompose
-                        })
-                    } else {
-                        SettingsScreen(
-                            viewModel = settingsViewModel
+                    when (callScribeDestination) {
+                        CallScribeDestination.Calls -> CallsScreen(
+                            repository = callScribeContainer.callRepository,
+                            onOpenCall = {
+                                selectedCallId = it
+                                callScribeDestination = CallScribeDestination.CallDetail
+                            },
+                            onOpenSettings = { callScribeDestination = CallScribeDestination.CallScribeSettings },
+                            onOpenModels = { callScribeDestination = CallScribeDestination.Models },
+                            onOpenAbout = { callScribeDestination = CallScribeDestination.About },
                         )
+                        CallScribeDestination.CallDetail -> selectedCallId?.let { callId ->
+                            CallDetailScreen(
+                                callId = callId,
+                                repository = callScribeContainer.callRepository,
+                                onBack = {
+                                    selectedCallId = null
+                                    callScribeDestination = CallScribeDestination.Calls
+                                },
+                            )
+                        }
+                        CallScribeDestination.Models -> ModelsScreen(
+                            onBack = { callScribeDestination = CallScribeDestination.Calls },
+                        )
+                        CallScribeDestination.About -> AboutScreen(
+                            versionString = settingsViewModel.getAppVersion(),
+                            onBack = { callScribeDestination = CallScribeDestination.Calls },
+                        )
+                        CallScribeDestination.CallScribeSettings -> CallScribeSettingsScreen(
+                            settings = callScribeContainer.settings,
+                            onBack = { callScribeDestination = CallScribeDestination.Calls },
+                            onOpenModels = { callScribeDestination = CallScribeDestination.Models },
+                            onOpenUpstreamSettings = {
+                                callScribeDestination = CallScribeDestination.Settings
+                            },
+                        )
+                        CallScribeDestination.WatchedFolders -> WatchedFoldersScreen(
+                            onBack = { callScribeDestination = CallScribeDestination.Settings },
+                        )
+                        CallScribeDestination.Settings -> {
+                            // CallScribe: show upstream settings directly without its forced sponsor flow.
+                            SettingsScreen(
+                                viewModel = settingsViewModel,
+                                onBack = { callScribeDestination = CallScribeDestination.Calls },
+                                onOpenAbout = { callScribeDestination = CallScribeDestination.About },
+                                onOpenWatchedFolders = {
+                                    callScribeDestination = CallScribeDestination.WatchedFolders
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -170,6 +216,17 @@ fun AppNavigationScreen() {
 }
 
 // -------- Private helpers
+
+// CallScribe: Additive destinations layered on top of upstream onboarding.
+private enum class CallScribeDestination {
+    Calls,
+    CallDetail,
+    CallScribeSettings,
+    Settings,
+    Models,
+    About,
+    WatchedFolders,
+}
 
 /** The three top-level screens. [AppNavigationScreen] shows one of these at a time. */
 private enum class AppScreen {

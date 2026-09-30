@@ -11,8 +11,8 @@
     <string name="general_resume">Reanudar</string>
     <string name="general_outgoing">saliente</string>
     <string name="general_system_limitation">Limitación del sistema</string>
-    <string name="general_system_limitation_message">ShizuCallRecorder no funcionará en este dispositivo ya que tu aplicación de shell no tiene los permisos necesarios:\n\n%1$s\n\nNo puedes hacer nada al respecto; la aplicación no puede funcionar y se cerrará ahora.</string>
-    <string name="disclaimer_title">Bienvenido a ShizuCallRecorder</string>
+    <string name="general_system_limitation_message">CallScribe no funcionará en este dispositivo ya que tu aplicación de shell no tiene los permisos necesarios:\n\n%1$s\n\nNo puedes hacer nada al respecto; la aplicación no puede funcionar y se cerrará ahora.</string>
+    <string name="disclaimer_title">Bienvenido a CallScribe</string>
     <string name="disclaimer_wiki_link_KEYWORD">Wiki</string>
     <string name="disclaimer_introduction">Por favor, abre y lee las instrucciones de configuración en nuestra Wiki antes de continuar. Luego, lee el descargo de responsabilidad que aparece a continuación.</string>
     <string name="disclaimer_checkbox_label">He leído el descargo de responsabilidad y comprendo los requisitos legales, las responsabilidades y las limitaciones técnicas de este software.</string>
@@ -138,8 +138,8 @@
     <string name="settings_shizuku_keep_alive_desc">No enviar el intent de detener</string>
     <string name="sponsor_title">Apoya el proyecto</string>
     <string name="sponsor_body_title">¡Hola, soy kitsumed (Med)! 👋</string>
-    <string name="sponsor_body">He estado metido en tecnologías y ordenadores desde que era joven. La mayoría de mis proyectos nacen de buscar soluciones para mis propias discapacidades físicas o mentales, mientras que otros simplemente son chispazos aleatorios de inspiración.\n\nShizuCallRecorder nació de una necesidad personal relacionada con una de mis discapacidades. Durante varios años busqué una aplicación gratuita y de código abierto (FOSS) para grabar llamadas que funcionara en dispositivos sin root, pero no encontré ninguna. No existía. Así que decidí crear la mía propia y hacerla pública.\n\nDedico gran parte de mi tiempo libre a aprender, crear y mantener software de código abierto. Tu apoyo me ayuda directamente en mi día a día a nivel económico y me motiva a seguir desarrollando herramientas de alta calidad para la comunidad.\n\nCreo en mantener mis aplicaciones libres de anuncios agresivos y de sistemas de rastreo que invadan la privacidad. Si mis herramientas te han sido útiles en tu día a día, ¡por favor, considera apoyarme!</string>
-    <string name="sponsor_days_used">¡Has estado usando ShizuCallRecorder durante %1$d días!</string>
+    <string name="sponsor_body">He estado metido en tecnologías y ordenadores desde que era joven. La mayoría de mis proyectos nacen de buscar soluciones para mis propias discapacidades físicas o mentales, mientras que otros simplemente son chispazos aleatorios de inspiración.\n\nCallScribe nació de una necesidad personal relacionada con una de mis discapacidades. Durante varios años busqué una aplicación gratuita y de código abierto (FOSS) para grabar llamadas que funcionara en dispositivos sin root, pero no encontré ninguna. No existía. Así que decidí crear la mía propia y hacerla pública.\n\nDedico gran parte de mi tiempo libre a aprender, crear y mantener software de código abierto. Tu apoyo me ayuda directamente en mi día a día a nivel económico y me motiva a seguir desarrollando herramientas de alta calidad para la comunidad.\n\nCreo en mantener mis aplicaciones libres de anuncios agresivos y de sistemas de rastreo que invadan la privacidad. Si mis herramientas te han sido útiles en tu día a día, ¡por favor, considera apoyarme!</string>
+    <string name="sponsor_days_used">¡Has estado usando CallScribe durante %1$d días!</string>
     <string name="sponsor_way_to_help">Formas en las que puedes ayudar:</string>
     <string name="sponsor_way_github_sponsor_title">Conviértete en patrocinador en GitHub</string>
     <string name="sponsor_way_github_sponsor_description">Consigue el logro de Patrocinador público, aparece con tu perfil en mi página y ayuda a mantenerme económicamente a mí y a mi trabajo de código abierto.</string>
@@ -148,13 +148,13 @@
     <string name="sponsor_way_contribute_title">Contribuye</string>
     <string name="sponsor_way_contribute_description">Ayuda con el código, informes de errores o traducciones.</string>
     <string name="sponsor_way_share_title">Comparte la aplicación</string>
-    <string name="sponsor_way_share_description">Cuéntales a tus amigos o a tu comunidad sobre ShizuCallRecorder.</string>
+    <string name="sponsor_way_share_description">Cuéntales a tus amigos o a tu comunidad sobre CallScribe.</string>
     <string name="sponsor_github_sponsor_button">Patrocinar en GitHub</string>
     <string name="sponsor_github_star_button">Dar estrella al repositorio</string>
     <string name="sponsor_maybe_later_button">Quizás más tarde</string>
     <string name="sponsor_notification_body">Este proyecto es gratuito, de código abierto y no contiene ningún anuncio. Si esta herramienta te ha ayudado en tu día a día, ¡considera echar un vistazo a las formas de apoyar el desarrollo del proyecto!</string>
     <string name="sponsor_notification_action">Ver opciones de apoyo</string>
-    <string name="sponsor_notification_call_to_action_title">¿Disfrutando de ShizuCallRecorder?</string>
+    <string name="sponsor_notification_call_to_action_title">¿Disfrutando de CallScribe?</string>
     <string name="sponsor_notification_call_to_action">¡Necesitamos tu ayuda!</string>
     <string name="permission_manage_ongoing_calls_label">Gestionar llamadas en curso</string>
     <string name="permission_manage_ongoing_calls_description">Permiso de AppOps concedido automáticamente con Shizuku. Necesario para detectar llamadas mediante InCallService.</string>

@@ -15,7 +15,7 @@
     <string name="disclaimer_wiki_link_KEYWORD">Wiki</string>
     <string name="disclaimer_introduction">続ける前に、Wikiのセットアップ手順をお読みください。その後、下記の免責事項をお読みください。</string>
     <string name="disclaimer_checkbox_label">私は免責事項を読み、このソフトウェアの法的要件、責務、技術的な制限を理解しました。</string>
-    <string name="disclaimer_title">Welcome to ShizuCallRecorder</string>
+    <string name="disclaimer_title">Welcome to CallScribe</string>
     <string name="disclaimer_wait">%1$d秒お待ちください</string>
     <string name="disclaimer_must_read">免責事項を読む必要があります。</string>
     <string name="permissions_title">権限のセットアップ</string>

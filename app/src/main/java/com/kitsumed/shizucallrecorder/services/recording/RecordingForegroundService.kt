@@ -22,6 +22,8 @@ import com.kitsumed.shizucallrecorder.data.AppPreferences
 import com.kitsumed.shizucallrecorder.data.call.EnrichedCallData
 import com.kitsumed.shizucallrecorder.integrations.shizuku.ShizukuConnectionManager
 import com.kitsumed.shizucallrecorder.utils.AppLogger
+import com.nicholaston.callscribe.hooks.CallScribeHooks
+import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -77,6 +79,9 @@ class RecordingForegroundService : Service() {
 
     /** IPC stub to the privileged ShellService running in the shell process. */
     private var shellService: IShellService? = null
+    // CallScribe: retain the detected call start for a skipped history entry on startup failure.
+    private var recordingAttemptStartedAt: Long = 0L
+    private var shizukuFailurePersisted = false
 
     /** Scope for service lifecycle operations (binding, etc.) */
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -176,14 +181,22 @@ class RecordingForegroundService : Service() {
                 }
 
                 _serviceState.update { RecordingServiceState.Starting(currentMeta) }
+                recordingAttemptStartedAt = System.currentTimeMillis()
+                shizukuFailurePersisted = false
 
                 // If enabled in the user preferences, we try to start the Shizuku as we are now starting the recording.
                 tryStartShizukuServer()
 
                 serviceScope.launch {
                     try {
-                        // Wait for Shizuku server to be available
-                        ShizukuConnectionManager.waitForServer()
+                        // CallScribe: manual starts do not pass through the auto-record decision engine.
+                        if (action == ACTION_MANUAL_START) {
+                            CallScribeHooks.onCallWillBeRecorded(this@RecordingForegroundService, currentMeta)
+                        }
+                        // CallScribe: react to Shizuku's binder lifecycle rather than polling.
+                        if (!ShizukuConnectionManager.awaitServer()) {
+                            throw IllegalStateException("Shizuku is not running")
+                        }
                         val service = shizukuManager.getShellService()
                         shellService = service // update local ref
                         startNewRecordingSession(service, currentMeta)
@@ -196,7 +209,11 @@ class RecordingForegroundService : Service() {
                         if (e is CancellationException) throw e
 
                         AppLogger.e( "Failed to perform ShellService binding with Shizuku. Ensure it is running, else look at error related to failed binding.", e)
-                        notificationHelper.showErrorNotification(getString(R.string.recording_shizuku_not_started) + "\nLocalized: " + e.localizedMessage)
+                        if (!ShizukuConnectionManager.isAvailable()) {
+                            persistShizukuUnavailable(currentMeta)
+                        } else {
+                            notificationHelper.showErrorNotification(getString(R.string.recording_shizuku_not_started) + "\nLocalized: " + e.localizedMessage)
+                        }
                         stopRecordingSessionAndService()
                     } finally {
                         _serviceState.update { currentState ->
@@ -306,12 +323,27 @@ class RecordingForegroundService : Service() {
             AppLogger.i( "Recording pipeline started successfully")
         } catch (e: PipelineInitializationException) {
             AppLogger.e( e.message ?: "", e.cause ?: e)
-            notificationHelper.showErrorNotification(e.userFriendlyMessage)
+            if (!ShizukuConnectionManager.isAvailable()) {
+                persistShizukuUnavailable(metadata)
+            } else {
+                notificationHelper.showErrorNotification(e.userFriendlyMessage)
+            }
             // Ensure partial resources are cleaned up
             activeSession.cancel(this, shellService)
             _serviceState.update { RecordingServiceState.Standby(metadata) }
             stopRecordingSessionAndService()
         }
+    }
+
+    // CallScribe: a recordable call must remain visible even when no audio file could be created.
+    private fun persistShizukuUnavailable(metadata: EnrichedCallData) {
+        if (shizukuFailurePersisted) return
+        shizukuFailurePersisted = true
+        CallScribeHooks.onRecordingSkippedBecauseShizukuUnavailable(
+            context = this,
+            metadata = metadata,
+            startedAt = recordingAttemptStartedAt.takeIf { it > 0 } ?: System.currentTimeMillis(),
+        )
     }
 
     /**
@@ -334,13 +366,34 @@ class RecordingForegroundService : Service() {
         // Release all resources held by the recording session, and stop the remote shell service, finalizing the recording file.
         activeSession.release(shellService)
 
+        // CallScribe: persist only finalized, non-empty recordings.
+        val finalizedAt = System.currentTimeMillis()
+        activeSession.currentRecordingUri?.let { uri ->
+            activeSession.initializationMetadata?.let { metadata ->
+                CallScribeHooks.onRecordingFinalized(
+                    context = this,
+                    uri = uri,
+                    metadata = metadata,
+                    startedAt = activeSession.recordingStartedAt,
+                    endedAt = finalizedAt,
+                    mimeType = activeSession.currentCodecEnum.mimeType,
+                )
+            }
+        }
+
         // If the user has enabled post-recording file actions, show a notification with options.
         if (appPreferences.isPostRecordingFileActionsNotificationEnabled()) {
             activeSession.currentRecordingUri?.let { filePathUri ->
                 activeSession.initializationMetadata?.let { metadata ->
                     // Ensure the file was written and exists
-                    val docFile = DocumentFile.fromSingleUri(applicationContext, filePathUri)
-                    if (docFile != null && docFile.exists() && docFile.length() > 0) {
+                    val exists = if (filePathUri.scheme == "file") {
+                        filePathUri.path?.let(::File)?.let { it.isFile && it.length() > 0 } == true
+                    } else {
+                        DocumentFile.fromSingleUri(applicationContext, filePathUri)
+                            ?.let { it.exists() && it.length() > 0 } == true
+                    }
+                    // The upstream action notification expects a shareable content URI.
+                    if (exists && filePathUri.scheme != "file") {
                         AppLogger.d( "Showing post-recording notification for user actions.")
                         notificationHelper.showPostCallNotification(filePathUri, metadata)
                     }

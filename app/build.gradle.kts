@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.aboutlibraries)
 }
 
@@ -23,6 +25,16 @@ val scrcpyServerAssetName = "scrcpy-server"
 val scrcpyDownloadDir = layout.buildDirectory.dir("generated/scrcpy/assets")
 val scrcpyServerAssetFile = scrcpyDownloadDir.map { it.file(scrcpyServerAssetName) }
 val libphonenumberMetadataDir = layout.buildDirectory.dir("generated/libphonenumber/assets")
+val sherpaOnnxVersion = "1.13.8"
+val sherpaOnnxAarUrl = "https://github.com/k2-fsa/sherpa-onnx/releases/download/v$sherpaOnnxVersion/sherpa-onnx-$sherpaOnnxVersion.aar"
+val sherpaOnnxAarSha256 = "633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96"
+val sherpaOnnxAarName = "sherpa-onnx-$sherpaOnnxVersion.aar"
+val sherpaOnnxDownloadDir = layout.buildDirectory.dir("generated/sherpa/libs")
+val sherpaOnnxAarFile = sherpaOnnxDownloadDir.map { it.file(sherpaOnnxAarName) }
+val sileroVadUrl = "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx"
+val sileroVadSha256 = "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6"
+val sileroVadAssetName = "silero_vad.onnx"
+val sileroVadDownloadDir = layout.buildDirectory.dir("generated/silero/assets")
 
 // Detect if we're running in a CI environment (e.g., GitHub Actions).
 val isEnvironmentGithubCI = providers.environmentVariable("GITHUB_ACTIONS").isPresent
@@ -94,6 +106,21 @@ val downloadScrcpyServer = tasks.register<DownloadAssetTask>("downloadScrcpyServ
     outputDir.set(scrcpyDownloadDir)
 }
 
+// CallScribe: pin native speech dependencies so releases are reproducible.
+val downloadSherpaOnnxAar = tasks.register<DownloadAssetTask>("downloadSherpaOnnxAar") {
+    url.set(sherpaOnnxAarUrl)
+    sha256.set(sherpaOnnxAarSha256)
+    assetName.set(sherpaOnnxAarName)
+    outputDir.set(sherpaOnnxDownloadDir)
+}
+
+val downloadSileroVad = tasks.register<DownloadAssetTask>("downloadSileroVad") {
+    url.set(sileroVadUrl)
+    sha256.set(sileroVadSha256)
+    assetName.set(sileroVadAssetName)
+    outputDir.set(sileroVadDownloadDir)
+}
+
 val extractLibphonenumberMetadata = tasks.register<ExtractMetadataTask>("extractLibphonenumberMetadata") {
     val lib = libs.libphonenumber.get()
     val jarFile = project.configurations
@@ -134,8 +161,9 @@ android {
         minSdk = 30
         targetSdk = 36
         // Keep theses two values hard-coded here and update them per version. (To keep F-Droid compatibility since their parser is very basic)
-        versionCode = 19
-        versionName = "1.3.3"
+        // CallScribe: independent version line from the upstream project.
+        versionCode = 1
+        versionName = "0.1.0"
 
         buildConfigField("String", "SCRCPY_VERSION", "\"$scrcpyVersion\"")
         buildConfigField("String", "SCRCPY_SERVER_SHA256", "\"$scrcpyServerSha256\"")
@@ -155,8 +183,14 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            ndk {
+                abiFilters += listOf("arm64-v8a", "x86_64")
+            }
         }
         release {
+            ndk {
+                abiFilters += "arm64-v8a"
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -204,6 +238,10 @@ kotlin {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 androidComponents {
     onVariants { variant ->
         variant.sources.assets?.addGeneratedSourceDirectory(
@@ -215,7 +253,16 @@ androidComponents {
             extractLibphonenumberMetadata,
             ExtractMetadataTask::outputDir
         )
+
+        variant.sources.assets?.addGeneratedSourceDirectory(
+            downloadSileroVad,
+            DownloadAssetTask::outputDir
+        )
     }
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(downloadSherpaOnnxAar)
 }
 
 aboutLibraries {
@@ -278,4 +325,26 @@ dependencies {
     // Shizuku
     implementation(libs.shizukuApi)
     implementation(libs.shizukuProvider)
+
+    // CallScribe data and work scheduling
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.datastore.preferences)
+
+    // CallScribe playback and serialization
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.kotlinx.serialization.json)
+
+    // CallScribe on-device speech engine
+    implementation(files(sherpaOnnxAarFile))
+
+    // Tests
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.androidx.test.core.ktx)
 }

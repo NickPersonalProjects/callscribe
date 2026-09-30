@@ -5,32 +5,53 @@ CallScribe is a privacy-first Android phone-call recorder and on-device transcri
 > [!IMPORTANT]
 > **CallScribe is a fork of [ShizuCallRecorder](https://github.com/kitsumed/ShizuCallRecorder).** It is not affiliated with or endorsed by the upstream project. ShizuCallRecorder's name, branding, and logos are not used by this fork.
 
-## Planned features
+## Features
 
 - Non-root recording of incoming and outgoing carrier calls through Shizuku
 - Fully local transcription with Parakeet TDT 0.6B v3 int8
 - Searchable transcripts with timestamps and speaker labels
 - Playback synchronized to transcript segments
-- Recording import, retention rules, and TXT/Markdown/SRT export
+- Watched-folder and share-sheet recording import
+- Retention rules and TXT, Markdown, SRT, and audio export
 - No analytics, advertising, or cloud speech service
 
-## Current status
+## Install
 
-CallScribe is under active development. The upstream recording engine is present, but transcription and the calls library are not yet release-ready. Android 12 or newer is required. Device compatibility varies by OEM and Android version.
+The easiest installation is the prebuilt APK from GitHub:
 
-## Development
+1. On an Android 12 or newer phone, open the
+   [latest CallScribe release](https://github.com/NickPersonalProjects/callscribe/releases/latest).
+2. Download the APK listed under **Assets**.
+3. Open the downloaded file. If Android blocks it, allow **Install unknown apps** for the browser or file manager you used, then try again.
+4. Install and open [Shizuku](https://github.com/RikkaApps/Shizuku/releases/latest). Start it using
+   **Wireless debugging** by following Shizuku's on-screen pairing steps.
+5. Open CallScribe, accept the legal notice, and grant the requested phone, call-log, contacts, notification, battery, and Shizuku permissions.
+6. Open **Models** and download **Parakeet TDT 0.6B v3 (int8)**. It needs about 670 MB plus temporary download space.
+7. Make a short test call and verify that both sides are audible before relying on automatic recording.
 
-The project uses JDK 17, Android SDK 36, Kotlin, and Jetpack Compose.
+Shizuku normally must be started again after every non-rooted phone reboot. The
+[thedjchi Shizuku fork](https://github.com/thedjchi/Shizuku) is an optional alternative intended to make restart-after-boot easier.
+
+For upgrades, download the newer APK and install it over the existing app. Do not uninstall first if you want to retain app-private recordings, transcripts, settings, and downloaded models.
+
+See [the complete setup guide](docs/CALLSCRIBE_SETUP.md) for troubleshooting, imports, transcription, and developer benchmark instructions.
+
+> [!WARNING]
+> The current release is a development preview. Carrier-call capture depends on the phone manufacturer, Android version, call route, and Shizuku. It has been build-tested and emulator-tested, but physical-device compatibility must be verified on your phone.
+
+## Build from source
+
+The project uses JDK 17, Android SDK 36, Kotlin, and Jetpack Compose. Create `local.properties` with your Android SDK path, then run:
 
 ```powershell
-.\gradlew.bat :app:assembleDebug
+.\gradlew.bat clean :app:testDebugUnitTest :app:assembleDebug :app:lintDebug --no-daemon
 ```
 
-See [UPSTREAM.md](UPSTREAM.md) for the fork strategy and [docs/SUPPORT.md](docs/SUPPORT.md) for Shizuku setup inherited from upstream.
+The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`. See [UPSTREAM.md](UPSTREAM.md) for the fork strategy.
 
 ## Privacy
 
-Recordings and transcripts are intended to remain on-device. The app's internet access is reserved for explicit speech-model downloads. Recordings, transcripts, and downloaded models are excluded from Android cloud backup.
+Recordings and transcripts are intended to remain on-device. The app's internet access is reserved for explicit, user-initiated speech-model downloads. Recordings, transcripts, downloaded models, and app settings are excluded from Android cloud backup and device-to-device transfer.
 
 ## Legal notice
 

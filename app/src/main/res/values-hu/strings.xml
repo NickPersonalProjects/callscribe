@@ -10,12 +10,12 @@
     <string name="general_incoming">bejövő</string>
     <string name="general_outgoing">kimenő</string>
     <string name="general_system_limitation">Rendszerkorlát</string>
-    <string name="disclaimer_title">Üdvözöljük a ShizuCallRecorder-ben</string>
+    <string name="disclaimer_title">Üdvözöljük a CallScribe-ben</string>
     <string name="disclaimer_wiki_link_KEYWORD">Wiki</string>
     <string name="general_close">Bezár</string>
     <string name="general_resume">Folytatás</string>
     <string name="general_reset">Visszaállít</string>
-    <string name="general_system_limitation_message">A ShizuCallRecorder nem fog működni ezen a készüléken mivel a shell alkalmazás nem rendelkezik a megfelelő jogosultságokkal.\n\n%1$s\n\nA helyzettel nem lehet mit tenni, az alkalmazás nem tud működni és most bezáródik.</string>
+    <string name="general_system_limitation_message">A CallScribe nem fog működni ezen a készüléken mivel a shell alkalmazás nem rendelkezik a megfelelő jogosultságokkal.\n\n%1$s\n\nA helyzettel nem lehet mit tenni, az alkalmazás nem tud működni és most bezáródik.</string>
     <string name="disclaimer_introduction">Továbblépés előtt tekintse át a telepítési útmutatót a Wiki oldalunkon, ezt követően pedig a lenti figyelmeztetéseket.</string>
     <string name="disclaimer_checkbox_label">Elolvastam a jogi nyilatkozatot és tisztában vagyok a szoftverrel kapcsolatos jogi követelményekkel, felelősségi körökkel valamint a szoftver műszaki korlátaival.</string>
     <string name="disclaimer_wait">Várjon %1$d másodpercet</string>
@@ -137,7 +137,7 @@
     <string name="settings_shizuku_keep_alive">A Shizuku életben tartása</string>
     <string name="sponsor_title">Támogassa a projektet</string>
     <string name="sponsor_body_title">Üdv, Én kitsumed (Med) vagyok! 👋</string>
-    <string name="sponsor_days_used">Már %1$d napja használja ShizuCallRecorder alkalmazást!</string>
+    <string name="sponsor_days_used">Már %1$d napja használja CallScribe alkalmazást!</string>
     <string name="sponsor_way_to_help">Így segíthet:</string>
     <string name="sponsor_way_github_sponsor_title">Legyen GitHub szponzor</string>
     <string name="sponsor_way_github_sponsor_description">Szerezze meg a „Nyílt Szponzor” elismerést, szerezzen helyet a profiljának az oldalamon, és támogasson anyagilag engem és a nyílt forráskódú munkáimat.</string>
@@ -146,7 +146,7 @@
     <string name="sponsor_way_contribute_title">Hozzájárulás</string>
     <string name="sponsor_way_contribute_description">Segítsen kódolással, hibabejelentésekkel, vagy fordítással.</string>
     <string name="sponsor_way_share_title">Alkalmazás megosztása</string>
-    <string name="sponsor_way_share_description">Meséljen barátainak vagy közösségének a ShizuCallRecorder-ről.</string>
+    <string name="sponsor_way_share_description">Meséljen barátainak vagy közösségének a CallScribe-ről.</string>
     <string name="sponsor_github_sponsor_button">Támogasson a GitHub-on</string>
     <string name="settings_record_third_party_calls">Harmadik féltől származó alkalmazások rögzítése</string>&gt;
     <string name="settings_record_third_party_calls_description">Az Android távközlési rendszerrel integrált, harmadik féltől származó hívások rögzítése. Ez néma vagy egyoldalú felvételeket eredményezhet.</string>
@@ -161,7 +161,7 @@
     <string name="sponsor_maybe_later_button">Talán később</string>
     <string name="sponsor_notification_body">Ez a projekt ingyenes, nyílt forráskódú, és nem tartalmaz hirdetéseket. Ha ez az eszköz segített a mindennapi életében, fontolja meg a fejlesztés támogatását!</string>
     <string name="sponsor_notification_action">Támogatási lehetőségek megtekintése</string>
-    <string name="sponsor_notification_call_to_action_title">Tetszik a ShizuCallRecorder?</string>
+    <string name="sponsor_notification_call_to_action_title">Tetszik a CallScribe?</string>
     <string name="sponsor_notification_call_to_action">Szükségünk van a segítségére!</string>
     <string name="permission_manage_ongoing_calls_label">Folyamatban lévő hívások kezelése</string>
     <string name="permission_manage_ongoing_calls_description">Az AppOps jogosultság automatikusan létrejön a Shizuku miatt. Az InCallService segítségével történő hívásérzékeléshez szükséges.</string>
@@ -171,7 +171,7 @@
     <string name="call_detection_mode_phonestate_description">Használja a régi típusú telefonállapot-közvetítést a már nem támogatott mezőkkel. Ez a mód időzítés érzékeny, és csak korlátozott mennyiségű információt nyújt számunkra.</string>
     <string name="call_detection_mode_phonestate_limited_support">Ez a hívásfelismerési módszer megbízhatatlan. A telefonállapot-frissítések fogadásakor egy már nem támogatott értéket kapunk, és a felismerési logika időzítés érzékeny. Emellett nem tudunk különbséget tenni a szolgáltatói és a harmadik féltől érkező hívások között. Ez a korlátozás azonban megkerülhető a névtelen hívások figyelmen kívül hagyásával.</string>
     <string name="call_detection_mode_incallservice_description">Használja a modern InCallService API-t. Ez a mód hatékonyabb, és több információ birtokában jobb felismerést biztosít.</string>
-    <string name="sponsor_body">Már fiatal korom óta vonzott a technológia és számítógépek világa. A legtöbb projektem a fizikális és mentális korlátaim leküzdése miatt jött létre, egyesek pedig csak véletlenszerű ötletek szüleménye.\n\nA ShizuCallRecorder egy speciális igényem miatt jött létre. Éveken keresztül kutattam egy olyan nyílt forráskódú (FOSS) app után, amely telefonbeszélgetéseket rögzít anélkül, hogy a készülék rootolva lenne. Mivel nem létezett ilyen, így létrehoztam, és elérhetővé tettem mindenki számára.\n\nA szabadidőm jelentős részét azzal töltöttem, hogy megtanuljak felépíteni és karbantartani egy nyílt forráskódú szoftvert. Az anyagi támogatás segít a mindennapjaimban, és motivál hogy továbbra is minőségi eszközöket hozzak létre a közösség számára.\n\nMeggyőződésem, hogy alkalmazásaimba nem szabad agresszív reklámokat és követőket raknom. Így ha hasznosnak találta eszközeimet mindennapjai során, fontolja meg a támogatásomat!</string>
+    <string name="sponsor_body">Már fiatal korom óta vonzott a technológia és számítógépek világa. A legtöbb projektem a fizikális és mentális korlátaim leküzdése miatt jött létre, egyesek pedig csak véletlenszerű ötletek szüleménye.\n\nA CallScribe egy speciális igényem miatt jött létre. Éveken keresztül kutattam egy olyan nyílt forráskódú (FOSS) app után, amely telefonbeszélgetéseket rögzít anélkül, hogy a készülék rootolva lenne. Mivel nem létezett ilyen, így létrehoztam, és elérhetővé tettem mindenki számára.\n\nA szabadidőm jelentős részét azzal töltöttem, hogy megtanuljak felépíteni és karbantartani egy nyílt forráskódú szoftvert. Az anyagi támogatás segít a mindennapjaimban, és motivál hogy továbbra is minőségi eszközöket hozzak létre a közösség számára.\n\nMeggyőződésem, hogy alkalmazásaimba nem szabad agresszív reklámokat és követőket raknom. Így ha hasznosnak találta eszközeimet mindennapjai során, fontolja meg a támogatásomat!</string>
     <string name="sponsor_github_star_button">Repo csillagozása</string>
     <string name="settings_open_github_Wiki">Wiki megnyitása</string>
     <string name="general_permission_escalation_exhausted">Nem sikerült megszerezni a „%1$s” „%2$s” jogosultságot.\nMinden jogosultság-emelési lépés (%3$d) kimerült.\n\nGyőződjön meg arról, hogy a Shizuku jelenleg fut-e, mivel ez okozhatja a hibát.\n\nElőfordulhat, hogy az OEM aktívan blokkolja vagy visszavonja az összes jogosultság-módosításunkat. Ellenőrizze a telefon beállításait, hogy van-e valami, ami kikapcsolhatja ezt a viselkedést.\n\nA Vivo, Oppo, Xiaomi és más kínai gyártók készülékei gyakran tartalmaznak szigorú rendszerkorlátozásokat, amelyek teljesen blokkolhatják a hozzáférést ehhez a jogosultsághoz.\n\nHa megtalálja a módját, hogy az ADB segítségével manuálisan megadja magának a szükséges jogosultságot, jelezze nekünk azzal, hogy létrehoz egy hibajelentést a GitHubon!</string>

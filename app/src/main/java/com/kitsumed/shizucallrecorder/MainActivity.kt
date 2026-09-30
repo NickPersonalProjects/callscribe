@@ -8,10 +8,14 @@
 
 package com.kitsumed.shizucallrecorder
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.nicholaston.callscribe.importer.ShareIntentImporter
+import kotlinx.coroutines.launch
 
 /**
  * MainActivity is the single Android Activity entry point for ShizuCallRecorder.
@@ -26,6 +30,19 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             AppNavigationScreen()
+        }
+        importSharedAudio(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        importSharedAudio(intent)
+    }
+
+    private fun importSharedAudio(intent: Intent) {
+        lifecycleScope.launch {
+            ShareIntentImporter.handle(applicationContext, intent)
         }
     }
 }

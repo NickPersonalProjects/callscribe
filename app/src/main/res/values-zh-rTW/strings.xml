@@ -13,8 +13,8 @@
     <string name="general_outgoing">去電</string>
     <string name="general_reset">重設</string>
     <string name="general_system_limitation">系統限制</string>
-    <string name="general_system_limitation_message">由於您的 Shell 應用程式缺少必要權限，ShizuCallRecorder 無法在此裝置上運作：\n\n%1$s\n\n您無法透過任何操作解決此問題。應用程式無法運作，現在將關閉。</string>
-    <string name="disclaimer_title">歡迎使用 ShizuCallRecorder</string>
+    <string name="general_system_limitation_message">由於您的 Shell 應用程式缺少必要權限，CallScribe 無法在此裝置上運作：\n\n%1$s\n\n您無法透過任何操作解決此問題。應用程式無法運作，現在將關閉。</string>
+    <string name="disclaimer_title">歡迎使用 CallScribe</string>
     <string name="disclaimer_wiki_link_KEYWORD">Wiki</string>
     <string name="disclaimer_introduction">繼續之前，請先開啟並閱讀 Wiki 上的設定說明，接著閱讀下方的免責聲明。</string>
     <string name="disclaimer_checkbox_label">我已閱讀免責聲明，並瞭解本軟體的法律要求、相關責任及技術限制。</string>
@@ -22,8 +22,8 @@
     <string name="disclaimer_must_read">您必須閱讀免責聲明。</string>
     <string name="sponsor_title">支持本專案</string>
     <string name="sponsor_body_title">嗨，我是 kitsumed（Med）！👋</string>
-    <string name="sponsor_body">我從小就對科技和電腦充滿興趣。我的大多數專案都源自於替自己的生理或心理障礙尋找解決方案，其他專案則只是偶然迸發的靈感。\n\nShizuCallRecorder 的誕生，源自與我的一項障礙有關的個人需求。多年來，我一直在尋找一款能在未 Root 裝置上運作的自由開源（FOSS）通話錄音應用程式，但始終找不到。因此，我決定自行開發，並將它公開。\n\n我投入許多空閒時間學習、開發及維護開放原始碼軟體。您的支持不僅能直接減輕我的日常經濟負擔，也能鼓勵我繼續為社群打造高品質工具。\n\n我相信應用程式不應包含擾人的廣告或侵犯隱私的追蹤功能。若我的工具對您的日常生活有所幫助，請考慮給予支持！</string>
-    <string name="sponsor_days_used">您已使用 ShizuCallRecorder %1$d 天！</string>
+    <string name="sponsor_body">我從小就對科技和電腦充滿興趣。我的大多數專案都源自於替自己的生理或心理障礙尋找解決方案，其他專案則只是偶然迸發的靈感。\n\nCallScribe 的誕生，源自與我的一項障礙有關的個人需求。多年來，我一直在尋找一款能在未 Root 裝置上運作的自由開源（FOSS）通話錄音應用程式，但始終找不到。因此，我決定自行開發，並將它公開。\n\n我投入許多空閒時間學習、開發及維護開放原始碼軟體。您的支持不僅能直接減輕我的日常經濟負擔，也能鼓勵我繼續為社群打造高品質工具。\n\n我相信應用程式不應包含擾人的廣告或侵犯隱私的追蹤功能。若我的工具對您的日常生活有所幫助，請考慮給予支持！</string>
+    <string name="sponsor_days_used">您已使用 CallScribe %1$d 天！</string>
     <string name="sponsor_way_to_help">您可以透過以下方式提供協助：</string>
     <string name="sponsor_way_github_sponsor_title">成為 GitHub 贊助者</string>
     <string name="sponsor_way_github_sponsor_description">取得公開贊助者成就、讓您的個人檔案顯示在我的頁面上，並在經濟上支持我及我的開源工作。</string>
@@ -32,13 +32,13 @@
     <string name="sponsor_way_contribute_title">參與貢獻</string>
     <string name="sponsor_way_contribute_description">協助撰寫程式碼、回報錯誤或進行翻譯。</string>
     <string name="sponsor_way_share_title">分享應用程式</string>
-    <string name="sponsor_way_share_description">向朋友或社群介紹 ShizuCallRecorder。</string>
+    <string name="sponsor_way_share_description">向朋友或社群介紹 CallScribe。</string>
     <string name="sponsor_github_sponsor_button">在 GitHub 上贊助</string>
     <string name="sponsor_github_star_button">為存放庫加上星號</string>
     <string name="sponsor_maybe_later_button">稍後再說</string>
     <string name="sponsor_notification_body">本專案完全免費、開放原始碼，且不含任何廣告。若這項工具對您的日常生活有所幫助，歡迎查看支持專案開發的方式！</string>
     <string name="sponsor_notification_action">查看支持方式</string>
-    <string name="sponsor_notification_call_to_action_title">喜歡 ShizuCallRecorder 嗎？</string>
+    <string name="sponsor_notification_call_to_action_title">喜歡 CallScribe 嗎？</string>
     <string name="sponsor_notification_call_to_action">我們需要您的協助！</string>
     <string name="permissions_title">權限設定</string>
     <string name="permissions_intro">開始錄音前需要取得幾項權限。請輕觸「授予權限」，並逐一允許各個項目。</string>

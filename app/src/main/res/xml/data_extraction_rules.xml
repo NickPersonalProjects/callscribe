@@ -6,22 +6,25 @@
   ~  This software is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   -->
 
-<!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
--->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- CallScribe: Keep sensitive content and device-specific settings out of cloud backup. -->
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="file" path="recordings" />
+        <exclude domain="file" path="models" />
+        <exclude domain="external" path="recordings" />
+        <exclude domain="external" path="models" />
+        <!-- CallScribe: Cache directories, including partial model downloads, are never backed up. -->
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- CallScribe: Apply the same privacy boundary to direct device-to-device migration. -->
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="file" path="recordings" />
+        <exclude domain="file" path="models" />
+        <exclude domain="external" path="recordings" />
+        <exclude domain="external" path="models" />
+        <!-- CallScribe: Cache directories, including partial model downloads, are never transferred. -->
     </device-transfer>
-    -->
 </data-extraction-rules>

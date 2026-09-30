@@ -73,6 +73,12 @@
         If you are legally required to inform or ask someone for consent before recording, please note that the application DOES NOT handle this for you.\n
         In some cases, certain features, like automatic call recording, may not be legally allowed. It is your responsibility to ensure compliance with applicable laws. This is not legal advice. Please consult a legal professional for guidance regarding your specific situation.\n\n
 
+        CALLSCRIBE PRIVACY NOTICE\n
+        CallScribe records call audio and creates transcripts on this device. Audio and transcripts may contain highly sensitive personal information. CallScribe performs transcription locally and does not upload call content, but model downloads require internet access. You control retention and storage settings. Deleting the app may delete app-private recordings. If you select shared storage, those files may remain after uninstalling.\n\n
+
+        SHIZUKU RELIABILITY\n
+        Recording requires Shizuku to be running. We recommend the thedjchi Shizuku fork because it supports starting at boot. Non-root Shizuku may still need attention after a reboot, so always verify the Shizuku status on the Calls screen. If Shizuku is unavailable, CallScribe records a skipped history entry and notifies you that the call was not recorded.\n\n
+
         APPLICATION BEHAVIOR\n
         Due to the evolving Android ecosystem and varying hardware (OEMs), this software is subject to non-deterministic behavior:\n\n
         * Concurrent Calls: The app may fail to detect transitions (e.g., while in a call, a second incoming call arrives, or switching between held calls). In these scenarios, the application may continue to record audio into a single continuous file without separate notifications or new notifications prompts for subsequent callers.\n\n
@@ -142,7 +148,7 @@
     <string name="permission_storage_description">Select where recordings will be saved.</string>
 
     <string name="permission_shizuku_label" translatable="false">Shizuku</string>
-    <string name="permission_shizuku_description">Required to start the audio recording (ShellService) with scrcpy.</string>
+    <string name="permission_shizuku_description">Required to start audio recording with scrcpy. We recommend the thedjchi Shizuku fork because it can restart at boot. After every reboot, verify that Shizuku is running before a call.</string>
     <string name="permission_shizuku_not_running">Not running</string>
     <string name="permission_shizuku_open">Open Shizuku</string>
 
@@ -291,6 +297,13 @@
 
     <!-- Settings Screen: About/Server Section -->
     <string name="settings_view_licenses">View Licenses</string>
+    <!-- CallScribe: Fork attribution and compliance screen. -->
+    <string name="settings_open_about">About CallScribe</string>
+    <string name="about_title">About CallScribe</string>
+    <string name="about_back">Back to settings</string>
+    <string name="about_fork_notice" translatable="false">This software is a fork of ShizuCallRecorder, available at https://github.com/kitsumed/ShizuCallRecorder</string>
+    <string name="about_credits_title">Credits and licenses</string>
+    <string name="about_all_dependency_licenses">View all dependency licenses</string>
     <string name="settings_scrcpy_server" translatable="false">Scrcpy-Server: %1$s</string>
     <string name="settings_open_github_Wiki">Open Wiki</string>
 

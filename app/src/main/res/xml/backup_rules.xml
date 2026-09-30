@@ -6,16 +6,13 @@
   ~  This software is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   -->
 
-<!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older than API 31
-   See https://developer.android.com/about/versions/12/backup-restore
--->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <!-- CallScribe: Keep sensitive content and device-specific settings off backup and transfer. -->
+    <exclude domain="database" path="." />
+    <exclude domain="sharedpref" path="." />
+    <exclude domain="file" path="recordings" />
+    <exclude domain="file" path="models" />
+    <exclude domain="external" path="recordings" />
+    <exclude domain="external" path="models" />
+    <!-- CallScribe: Cache directories, including partial model downloads, are never backed up. -->
 </full-backup-content>

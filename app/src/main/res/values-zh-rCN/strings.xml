@@ -7,7 +7,7 @@
     <string name="general_licenses">许可协议</string>
     <string name="general_pause">暂停</string>
     <string name="general_system_limitation">系统限制</string>
-    <string name="disclaimer_title">欢迎使用 ShizuCallRecorder</string>
+    <string name="disclaimer_title">欢迎使用 CallScribe</string>
     <string name="disclaimer_wiki_link_KEYWORD">查看项目Wiki</string>
     <string name="disclaimer_introduction">请先打开并阅读我们在 Wiki 上的设置说明。然后，请阅读下面的免责声明。</string>
     <string name="disclaimer_checkbox_label">我已阅读免责声明，并理解本软件的法律要求、责任和技术限制。</string>
@@ -75,7 +75,7 @@
     <string name="settings_debug_logging_enabled">记录运行日志</string>
     <string name="settings_debug_logging_report_on_github">反馈到GitHub</string>
     <string name="general_record">录音</string>
-    <string name="general_system_limitation_message">很抱歉，ShizuCallRecorder无法在您的设备上运行，因为您设备的shell权限不足。\n\n%1$s\n\n对于您厂商添加的限制，我们无能为力。ShizuCallRecorder现在将退出。</string>
+    <string name="general_system_limitation_message">很抱歉，CallScribe无法在您的设备上运行，因为您设备的shell权限不足。\n\n%1$s\n\n对于您厂商添加的限制，我们无能为力。CallScribe现在将退出。</string>
     <string name="settings_section_recording">自动录音触发条件</string>
     <string name="settings_section_about">关于</string>
     <string name="settings_shizuku_auto_manage">管理Shizuku</string>
@@ -136,11 +136,11 @@
     <string name="recording_error_server_missing">Scrcpy-server二进制文件缺失，或者SHA256安全校验失败。如果看到此消息，请直接反馈此问题。</string>
     <string name="settings_shizuku_keep_alive_desc">结束通话时保持Shizuku继续运行（仅在开始通话时触发自启动）</string>
     <string name="settings_shizuku_keep_alive">保持Shizuku进程常驻</string>
-    <string name="sponsor_days_used">ShizuCallRecorder已陪伴您走过 %1$d 天！</string>
+    <string name="sponsor_days_used">CallScribe已陪伴您走过 %1$d 天！</string>
     <string name="sponsor_way_to_help">您可以通过这些方式来帮助我们：</string>
     <string name="sponsor_way_github_sponsor_title">在Github上协助我们</string>
     <string name="sponsor_way_github_star_title">在Github上给这个项目点赞</string>
-    <string name="sponsor_way_share_description">向您的朋友以及您所接触到的用户群推荐ShizuCallRecorder。</string>
+    <string name="sponsor_way_share_description">向您的朋友以及您所接触到的用户群推荐CallScribe。</string>
     <string name="sponsor_github_sponsor_button">在Github上提供协助</string>
     <string name="sponsor_github_star_button">点赞项目仓库</string>
     <string name="sponsor_maybe_later_button">下次再说</string>
@@ -153,7 +153,7 @@
     <string name="settings_call_detection_method">检测通话的方式</string>
     <string name="sponsor_title">支持此项目</string>
     <string name="sponsor_body_title">Hi，我是此项目的作者kitsumed (Med)！👋</string>
-    <string name="sponsor_body">我向来对科技与计算机感兴趣，大部分项目都是源于解决生活中所遇的问题，当然也不乏一些纯粹是灵光乍现的作品。\n\nShizuCallRecorder 的诞生正是源于解决我自身所遇的需求。多年来，我一直在寻找一款能在未root设备上运行的免费开源（FOSS）通话录音应用，但始终一无所获。实际上，当时根本没有这样的应用。于是，我决定自己开发一款开源软件。\n\n我投入了大量的业余时间学习、开发和维护开源软件。您的支持不仅能直接帮助我维持生计，还能激励我继续为社区开发高质量的工具。\n\n我会坚守初心，让我的App远离侵入式广告和侵犯您隐私的追踪行为。如果我的工具帮到了您，还希望您可以考虑支持我！</string>
+    <string name="sponsor_body">我向来对科技与计算机感兴趣，大部分项目都是源于解决生活中所遇的问题，当然也不乏一些纯粹是灵光乍现的作品。\n\nCallScribe 的诞生正是源于解决我自身所遇的需求。多年来，我一直在寻找一款能在未root设备上运行的免费开源（FOSS）通话录音应用，但始终一无所获。实际上，当时根本没有这样的应用。于是，我决定自己开发一款开源软件。\n\n我投入了大量的业余时间学习、开发和维护开源软件。您的支持不仅能直接帮助我维持生计，还能激励我继续为社区开发高质量的工具。\n\n我会坚守初心，让我的App远离侵入式广告和侵犯您隐私的追踪行为。如果我的工具帮到了您，还希望您可以考虑支持我！</string>
     <string name="sponsor_way_github_sponsor_description">这可以使您的个人资料出现在我的页面上、让您获得Public Sponsor的荣誉，并在经济上支持我和我的开源项目。</string>
     <string name="sponsor_way_github_star_description">帮助提高此项目的曝光率，使其为更多用户所爱。</string>
     <string name="sponsor_way_contribute_title">支持此项目</string>

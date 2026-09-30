@@ -26,6 +26,7 @@ import com.kitsumed.shizucallrecorder.services.shell.ShellService
 import com.kitsumed.shizucallrecorder.utils.AppLogger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuProvider
 import kotlin.coroutines.resume
@@ -221,6 +222,24 @@ class ShizukuConnectionManager(
             }
             AppLogger.w( "Timed out waiting for Shizuku server after ${timeoutMillis}ms")
             return false
+        }
+
+        // CallScribe: await Shizuku's binder lifecycle callback instead of adding another poller.
+        suspend fun awaitServer(timeoutMillis: Long = 30000): Boolean {
+            if (isAvailable()) return true
+            return withTimeoutOrNull(timeoutMillis) {
+                suspendCancellableCoroutine { continuation ->
+                    lateinit var listener: Shizuku.OnBinderReceivedListener
+                    listener = Shizuku.OnBinderReceivedListener {
+                        Shizuku.removeBinderReceivedListener(listener)
+                        if (continuation.isActive) continuation.resume(true)
+                    }
+                    continuation.invokeOnCancellation {
+                        Shizuku.removeBinderReceivedListener(listener)
+                    }
+                    Shizuku.addBinderReceivedListenerSticky(listener)
+                }
+            } ?: false
         }
     }
 

@@ -33,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Key
@@ -56,8 +57,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kitsumed.shizucallrecorder.R
 import com.kitsumed.shizucallrecorder.data.AppPreferences
@@ -82,8 +81,6 @@ import com.kitsumed.shizucallrecorder.ui.viewmodels.ContactPickerViewModel
 import com.kitsumed.shizucallrecorder.ui.viewmodels.DebugAction
 import com.kitsumed.shizucallrecorder.ui.viewmodels.SettingsActions
 import com.kitsumed.shizucallrecorder.ui.viewmodels.SettingsViewModel
-import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
-import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.kitsumed.shizucallrecorder.system.permissions.PermissionChecks
 import kotlinx.coroutines.delay
 import org.xmlpull.v1.XmlPullParser
@@ -99,6 +96,11 @@ import androidx.core.net.toUri
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
+    // CallScribe: Return from upstream settings to the Calls home.
+    onBack: () -> Unit,
+    // CallScribe: Navigate to the dedicated fork attribution and credits screen.
+    onOpenAbout: () -> Unit,
+    onOpenWatchedFolders: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -141,6 +143,9 @@ fun SettingsScreen(
         },
         onDismissContacts = { contactPickerViewModel.dismissContactPicker() },
         onExportLogs = { exportLogLauncher.launch("shizucallrecorder_bug_report.log") },
+        onBack = onBack,
+        onOpenAbout = onOpenAbout,
+        onOpenWatchedFolders = onOpenWatchedFolders,
         modifier = modifier
     )
 }
@@ -172,6 +177,11 @@ fun SettingsContent(
     onConfirmContacts: (Set<String>) -> Unit,
     onDismissContacts: () -> Unit,
     onExportLogs: () -> Unit,
+    // CallScribe: Optional top-level navigation supplied by the fork shell.
+    onBack: (() -> Unit)? = null,
+    // CallScribe: Dedicated About destination callback.
+    onOpenAbout: () -> Unit,
+    onOpenWatchedFolders: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -189,13 +199,41 @@ fun SettingsContent(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
-                Text(
-                    text = stringResource(R.string.general_settings),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    onBack?.let {
+                        IconButton(onClick = it) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back to calls"
+                            )
+                        }
+                    }
+                    Text(
+                        text = stringResource(R.string.general_settings),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            item {
+                AboutSection(
+                    versionString = actions.getAppVersion(),
+                    onOpenAbout = onOpenAbout
                 )
             }
-            item { AboutSection(versionString = actions.getAppVersion()) }
+            item {
+                SettingsSection(title = "Imports") {
+                    ListItem(
+                        headlineContent = { Text("Watched folders") },
+                        supportingContent = { Text("Import recordings from selected folders") },
+                        trailingContent = {
+                            Icon(Icons.Default.ChevronRight, contentDescription = null)
+                        },
+                        modifier = Modifier.clickable(onClick = onOpenWatchedFolders),
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                    )
+                }
+            }
             item {
                 RecordingSection(
                     preferences = preferences,
@@ -234,12 +272,9 @@ fun SettingsContent(
 /** Shows the app version, server version, clipboard buttons, and a GitHub link.
  */
 @Composable
-private fun AboutSection(versionString: String) {
+private fun AboutSection(versionString: String, onOpenAbout: () -> Unit) {
     val context = LocalContext.current
     val serverVersion = ScrcpyConfig.SCRCPY_VERSION
-
-    var showLicensesDialog by remember() { mutableStateOf(false) }
-    var showSponsorScreen by remember() { mutableStateOf(false) }
 
     SettingsSection(title = stringResource(R.string.settings_section_about)) {
         ListItem(
@@ -258,69 +293,12 @@ private fun AboutSection(versionString: String) {
                 modifier = Modifier.weight(1f)
             ) { Text(stringResource(R.string.settings_open_github_Wiki)) }
             OutlinedButton(
-                onClick = { showLicensesDialog = true },
+                // CallScribe: Replace the licenses-only dialog with the full compliance screen.
+                onClick = onOpenAbout,
                 modifier = Modifier.weight(1f)
-            ) { Text(stringResource(R.string.settings_view_licenses)) }
+            ) { Text(stringResource(R.string.settings_open_about)) }
         }
-        Button(
-            onClick = { showSponsorScreen = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-        ) { Text(stringResource(R.string.sponsor_title)) }
-    }
-
-    if (showSponsorScreen) {
-        Dialog(
-            onDismissRequest = { showSponsorScreen = false },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false, // False for edge-to-edge, since our SponsorScreen take full screen
-                decorFitsSystemWindows = false,
-                dismissOnClickOutside = false,
-                dismissOnBackPress = true,
-
-            )
-        ) {
-            SponsorScreen(onDismiss = { showSponsorScreen = false })
-        }
-    }
-
-    // Handle license dialog
-    if (showLicensesDialog) {
-        Dialog(
-            onDismissRequest = { showLicensesDialog = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surface
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.general_licenses),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
-
-                    val libraries by produceLibraries(R.raw.aboutlibraries)
-                    LibrariesContainer(libraries,Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                        showAuthor = true, showLicenseBadges = true, showFundingBadges = false, showVersion = true, showDescription = true)
-                    TextButton(
-                        onClick = { showLicensesDialog = false },
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(8.dp)
-                    ) {
-                        Text(stringResource(R.string.general_close))
-                    }
-                }
-            }
-        }
+        // CallScribe: upstream attribution remains in About; do not present upstream sponsorship.
     }
 }
 
@@ -1258,7 +1236,9 @@ private fun SettingsScreenPreview() {
             onOpenContactsOutgoing = {},
             onConfirmContacts = {},
             onDismissContacts = {},
-            onExportLogs = {}
+            onExportLogs = {},
+            onBack = {},
+            onOpenAbout = {}
         )
     }
 }
